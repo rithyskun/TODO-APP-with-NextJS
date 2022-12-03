@@ -12,6 +12,13 @@
   align-items: center;
 }
 
+.list {
+  display: flex;
+	gap: 8px;
+  align-text: center;
+  justify-content: end
+}
+
 .footer {
   display: flex;
   flex: 1;
@@ -42,7 +49,7 @@
 .title {
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 2rem;
 }
 
 .title,
@@ -73,9 +80,13 @@
   max-width: 800px;
 }
 
+.button {
+  padding: 1rem;
+}
+
 .card {
   margin: 1rem;
-  padding: 1.5rem;
+  padding: 0.5rem;
   text-align: left;
   color: inherit;
   text-decoration: none;
