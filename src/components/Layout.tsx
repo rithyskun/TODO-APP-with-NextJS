@@ -17,7 +17,7 @@ const Layout = ({ children, title = "Todo App" }: Props) => (
 
     <header>
       <nav>
-        <Link href="/">Todo with API</Link> |
+        <Link href="/todo-api">Todo with API</Link> |
         <Link href="/todos-local"> Todo with Local State</Link>
       </nav>
     </header>

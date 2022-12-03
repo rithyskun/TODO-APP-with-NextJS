@@ -1,19 +1,19 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-import { Todo } from "../../types/type";
+import { Todo } from "../types/type";
 type ChangeInputHandler = ChangeEvent<HTMLInputElement>;
 
 const inititalState = {
   todo: "",
   isCompleted: false,
-  isEdit: true
+  isEdit: true,
 };
 
 
-const NewTodo = (): JSX.Element => {
+const Form = (): JSX.Element => {
   const [task, setTask] = useState<Todo>(inititalState);
   const router = useRouter();
-  const [isEdit, setIsEdit] = useState(false)
+  const [isEdit, setIsEdit] = useState(false);
 
   const createTask = async (task: Todo) => {
     await fetch("http://localhost:4001/api/todo", {
@@ -44,7 +44,7 @@ const NewTodo = (): JSX.Element => {
         await createTask(task);
       }
       setTask(inititalState);
-      router.push("/");
+      router.push("/todo-api");
     } catch (error: any) {
       console.log(error);
     }
@@ -73,13 +73,31 @@ const NewTodo = (): JSX.Element => {
     if (typeof router.query.id === "string") {
       onLoad(router.query.id);
     }
-  }, [router.query])
-    
+  }, [router.query]);
 
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div>
+        {router.query.id ? (
+          <div>
+            <input
+              type="text"
+              name="todo"
+              id="todo"
+              value={task.todo}
+              onChange={handleChange}
+              placeholder="input task"
+            />
+            <input
+              type="checkbox"
+              id="isCompleted"
+              name="isCompleted"
+              onChange={handleChange}
+              checked={task.isCompleted}
+            />
+            <label htmlFor="isCompleted">isCompleted</label>
+          </div>
+        ) : (
           <input
             type="text"
             name="todo"
@@ -88,28 +106,16 @@ const NewTodo = (): JSX.Element => {
             onChange={handleChange}
             placeholder="input task"
           />
-          <input
-            type="checkbox"
-            id="isCompleted"
-            name="isCompleted"
-            onChange={handleChange}
-            checked={task.isCompleted}
-          />
-          <label htmlFor="isCompleted">isCompleted</label>
-        </div>
-
-        {router.query.id ? (
-          <button type="submit">Update</button>
-        ) : (
-          <button type="submit">Save</button>
         )}
 
-        { router.query.id && (<button onClick={() => router.push('/')}>Return</button>)}
-      </form>
+        {router.query.id ? <button>Update</button> : <button>Save</button>}
 
-      
+        {router.query.id && (
+          <button onClick={() => router.push("/todo-api")}>Return</button>
+        )}
+      </form>
     </>
   );
 };
 
-export default NewTodo;
+export default Form;

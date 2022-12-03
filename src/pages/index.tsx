@@ -2,7 +2,7 @@ import Layout from "../components/Layout";
 import { Todo } from "../types/type";
 import List from "../components/List";
 import { GetServerSideProps } from "next";
-import NewTodo from "./todo-api/new";
+import NewTodo from "./todo-api";
 type Props = {
   todos: Todo[];
 };
@@ -10,9 +10,7 @@ type Props = {
 const HomePage = ({todos}: Props) => {
   return (
     <Layout title="Todo App">
-      <h1>Todo List with API</h1>
-        <NewTodo />
-      <List items={todos} />
+     <h1>Welcome to Todo App</h1>
     </Layout>
   );
 };

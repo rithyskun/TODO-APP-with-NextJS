@@ -1,86 +1,70 @@
-import Link from "next/link";
 import { Todo } from "../types/type";
 import { formatDateLocal } from "../utils/helper";
-import Router from "next/router";
+import styles from "../styles/Home.module.css";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from 'react'
 
 type Props = {
   data: Todo;
 };
 
 function ListItem({ data }: Props) {
+  const router = useRouter();
+  const [ isEdit, setIsEdit ] = useState(false)
   const handleEdit = (id: string) => {
-    Router.push(`/todo-api/${id}`);
+    
+    router.push(`/todo-api/edit/${id}`);
   };
   const handleDelete = async (id: string) => {
     await fetch("http://localhost:4001/api/todo/" + id, {
       method: "DELETE",
     });
-    Router.push("/");
+    router.push("/todo-api");
+  };
+
+  const updateTask = async (id: string, task: Todo) => {
+    await fetch("http://localhost:4001/api/todo/" + id, {
+      method: "PUT",
+      body: JSON.stringify(task),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  const handleChange = async (item: Todo, event: any) => {
+    const { checked } = event.target;
+    try {
+      let id = String(item.id);
+      await updateTask(id, {
+        todo: item.todo,
+        isCompleted: checked,
+      });
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   return (
     <div>
-      {!data.isEdit ? (
-        <div>
-          {data.todo} | {formatDateLocal(data.createdAt)}
-          <input
-            id="isCompleted"
-            name="isCompleted"
-            type="checkbox"
-            defaultChecked={data.isCompleted}
-          />
-          <label htmlFor="isCompleted">isCompleted</label>
-          <div>
-            <button onClick={() => handleEdit(String(data.id))}>edit</button>
-            <button onClick={() => handleDelete(String(data.id))}>
-              delete
-            </button>
-          </div>
-        </div>
+      <input
+        className={styles.checked}
+        id="isCompleted"
+        name="isCompleted"
+        type="checkbox"
+        onChange={() => handleChange(data, event)}
+        defaultChecked={data.isCompleted}
+      />
+      {isEdit ? (
+        <input type="text" id="todo" name="todo" defaultValue={data.todo} />
       ) : (
-        <div>
-          
-        </div>
+        <>{data.todo}</>
       )}
+      <button onClick={() => handleEdit(String(data.id))}>edit</button>
+      <button onClick={() => handleDelete(String(data.id))}>delete</button>
     </div>
   );
 }
-
-// const ListItem = ({ data }: Props) => (
-
-//   <div>
-//     {data.isEdit ? (
-//       <div>
-//         {items.todo} | {formatDateLocal(data.createdAt)}
-//         <input
-//           id="isCompleted"
-//           name="isCompleted"
-//           type="checkbox"
-//           defaultChecked={data.isCompleted}
-//         />
-//         <label htmlFor="isCompleted">isCompleted</label>
-//         <div>
-//           <button onClick={() => handleEdit(String(data.id))}>edit</button>
-//           <button onClick={() => handleDelete(String(data.id))}>delete</button>
-//         </div>
-//       </div>
-//     ) : (
-//       <div>
-//         <input type="text" id="todo" name="todo" value={task}></input>
-//         <input
-//           id="isCompleted"
-//           name="isCompleted"
-//           type="checkbox"
-//           defaultChecked={data.isCompleted}
-//         />
-//         <label htmlFor="isCompleted">isCompleted</label>
-//         <div>
-//           <button onClick={() => handleEdit(String(data.id))}>edit</button>
-//           <button onClick={() => handleDelete(String(data.id))}>delete</button>
-//         </div>
-//       </div>
-//     )}
-//   </div>
-// );
 
 export default ListItem;
