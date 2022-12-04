@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import Link from "next/link";
 import Head from "next/head";
+import styles from "../styles/Home.module.css";
 
 type Props = {
   children?: ReactNode;
@@ -21,10 +22,8 @@ const Layout = ({ children, title = "Todo App" }: Props) => (
         <Link href="/todos-local"> Todo with Local State</Link>
       </nav>
     </header>
-      {children}
-    <footer>
-      <hr />
-    </footer>
+    {children}
+    
   </div>
 );
 

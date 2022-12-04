@@ -2,42 +2,55 @@ import Layout from "../../components/Layout";
 import { Todo } from "../../types/type";
 import List from "../../components/List";
 import { GetServerSideProps } from "next";
-import Form from "../../components/Form";
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react'
-type ChangeInputHandler = ChangeEvent<HTMLInputElement>;
+import React, { useState } from "react";
+import FormBase from "../../components/FormBase";
 
 type Props = {
   todos: Todo[];
 };
 
-const HomePage = ({todos}: Props) => {
+const HomePage = ({ todos }: Props) => {
+  const [filter, setFilter] = useState("");
+  const [search, setSearch] = useState(false);
+
+  const handleSubmit = (e: React.SyntheticEvent): void => {
+    e.preventDefault();
+    let target = e.target as HTMLInputElement;
+    setFilter(target.value);
+  };
+
+  const fillted = todos.filter((item) => {
+    return item.todo.toLowerCase().includes(filter);
+  });
+
+  const handleChangeSearch = () => {
+    setSearch(!search);
+    setFilter("");
+  };
+
   return (
-    <Layout>
-      <h1>Todo List with API</h1>
-        <Form />
-      <List items={todos} />
+    <Layout title="Todo App">
+      <h1>Todo App (API)</h1>
+      {search ? (
+        <div>
+          <input
+            type="search"
+            id="filter"
+            name="filter"
+            onChange={handleSubmit}
+            placeholder="Search"
+          />
+          <button onClick={handleChangeSearch}>reset</button>
+        </div>
+      ) : (
+        <div>
+          <FormBase />
+          <button onClick={handleChangeSearch}>filter</button>
+        </div>
+      )}
+      <List items={fillted} />
     </Layout>
   );
-};
-
-const createTask = async (task: Todo) => {
-  await fetch("http://localhost:4001/api/todo", {
-    method: "POST",
-    body: JSON.stringify(task),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
-const updateTask = async (id: string, task: Todo) => {
-  await fetch("http://localhost:4001/api/todo/" + id, {
-    method: "PUT",
-    body: JSON.stringify(task),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {

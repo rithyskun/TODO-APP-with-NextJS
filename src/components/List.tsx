@@ -6,7 +6,7 @@ type Props = {
 };
 
 const List = ({ items }: Props) => (
-  <>
+  <div>
     {items?.length ? (
       <ul>
         {items?.map((item) => (
@@ -16,9 +16,10 @@ const List = ({ items }: Props) => (
         ))}
       </ul>
     ) : (
-      <div>Empty List</div>
+      <>No result. Create new one instead!</>
     )}
-  </>
+   
+  </div>
 );
 
 export default List;

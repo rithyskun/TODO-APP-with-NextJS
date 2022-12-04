@@ -15,7 +15,7 @@ const HomePage = ({ items }: Props) => {
   }, [items]);
   return (
     <Layout title="Todo App with local">
-      <h1>Todo List with Local</h1>
+      <h1>Todo App (Local)</h1>
       <NewTodo />
       <List items={items} />
     </Layout>

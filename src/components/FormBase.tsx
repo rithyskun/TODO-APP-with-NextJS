@@ -1,6 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { Todo } from "../types/type";
+import Layout from "../components/Layout";
 type ChangeInputHandler = ChangeEvent<HTMLInputElement>;
 
 const inititalState = {
@@ -9,20 +10,24 @@ const inititalState = {
   isEdit: true,
 };
 
-
 const Form = (): JSX.Element => {
   const [task, setTask] = useState<Todo>(inititalState);
   const router = useRouter();
-  const [isEdit, setIsEdit] = useState(false);
 
   const createTask = async (task: Todo) => {
-    await fetch("http://localhost:4001/api/todo", {
+    if (!task.todo) {
+      return alert("The task require!");
+    }
+    const response = await fetch("http://localhost:4001/api/todo", {
       method: "POST",
       body: JSON.stringify(task),
       headers: {
         "Content-Type": "application/json",
       },
     });
+    if (response.status === 409) {
+      return alert("The task exist!");
+    }
   };
 
   const updateTask = async (id: string, task: Todo) => {
@@ -76,27 +81,30 @@ const Form = (): JSX.Element => {
   }, [router.query]);
 
   return (
-    <>
+    <div>
       <form onSubmit={handleSubmit}>
         {router.query.id ? (
-          <div>
+          <Layout>
+            <br />
             <input
               type="text"
               name="todo"
               id="todo"
               value={task.todo}
               onChange={handleChange}
-              placeholder="input task"
+              placeholder="add a task item"
             />
-            <input
-              type="checkbox"
-              id="isCompleted"
-              name="isCompleted"
-              onChange={handleChange}
-              checked={task.isCompleted}
-            />
-            <label htmlFor="isCompleted">isCompleted</label>
-          </div>
+            <>
+              <input
+                type="checkbox"
+                id="isCompleted"
+                name="isCompleted"
+                onChange={handleChange}
+                checked={task.isCompleted}
+              />
+              <label htmlFor="isCompleted">isCompleted</label>
+            </>
+          </Layout>
         ) : (
           <input
             type="text"
@@ -104,17 +112,18 @@ const Form = (): JSX.Element => {
             id="todo"
             value={task.todo}
             onChange={handleChange}
-            placeholder="input task"
+            placeholder="add a task item"
           />
         )}
-
-        {router.query.id ? <button>Update</button> : <button>Save</button>}
+        {router.query.id ? <button>update</button> : <button>save</button>}
 
         {router.query.id && (
-          <button onClick={() => router.push("/todo-api")}>Return</button>
+          <>
+            <button onClick={() => router.push("/todo-api")}>return</button>
+          </>
         )}
       </form>
-    </>
+    </div>
   );
 };
 

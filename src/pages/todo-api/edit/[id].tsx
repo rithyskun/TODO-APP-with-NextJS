@@ -1,3 +1,3 @@
-import newTodo from '../../../components/Form'
+import newTodo from '../../../components/FormBase'
 
 export default newTodo
