@@ -10,7 +10,7 @@ type Props = {
 const HomePage = ({todos}: Props) => {
   return (
     <Layout title="Todo App">
-     <h1>Welcome to Todo App</h1>
+     <h1>Welcome to Todo</h1>
     </Layout>
   );
 };

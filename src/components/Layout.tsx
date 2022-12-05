@@ -9,7 +9,7 @@ type Props = {
 };
 
 const Layout = ({ children, title = "Todo App" }: Props) => (
-  <div>
+  <main>
     <Head>
       <title>{title}</title>
       <meta charSet="utf-8" />
@@ -23,8 +23,7 @@ const Layout = ({ children, title = "Todo App" }: Props) => (
       </nav>
     </header>
     {children}
-    
-  </div>
+  </main>
 );
 
 export default Layout;

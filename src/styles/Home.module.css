@@ -12,10 +12,16 @@
   align-items: center;
 }
 
+.ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
 .list {
   display: flex;
 	gap: 8px;
-  align-text: center;
+  align-text: start;
   justify-content: center
 }
 
@@ -49,7 +55,7 @@
 .title {
   margin: 0;
   line-height: 1.15;
-  font-size: 2rem;
+  font-size: 16px;
 }
 
 .title,
@@ -59,6 +65,7 @@
 
 .checked {
   text-decoration: line-through;
+  opacity: 0.6;
 }
 
 .description {

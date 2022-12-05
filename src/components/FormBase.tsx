@@ -2,6 +2,7 @@ import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { Todo } from "../types/type";
 import Layout from "../components/Layout";
+import styles from '../styles/Home.module.css'
 type ChangeInputHandler = ChangeEvent<HTMLInputElement>;
 
 const inititalState = {
@@ -28,6 +29,7 @@ const Form = (): JSX.Element => {
     if (response.status === 409) {
       return alert("The task exist!");
     }
+    return response
   };
 
   const updateTask = async (id: string, task: Todo) => {
@@ -118,9 +120,9 @@ const Form = (): JSX.Element => {
         {router.query.id ? <button>update</button> : <button>save</button>}
 
         {router.query.id && (
-          <>
+          <span>
             <button onClick={() => router.push("/todo-api")}>return</button>
-          </>
+          </span>
         )}
       </form>
     </div>
