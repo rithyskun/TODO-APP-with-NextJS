@@ -2,6 +2,7 @@ import { Todo } from "../types/type";
 import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
 import { ChangeEvent } from "react";
+import { socketConnection, socketEmit, socketOn } from '../utils/socket'
 
 type Props = {
   items: Todo[];
@@ -18,6 +19,7 @@ const List = ({ items, onChange }: Props) => {
       method: "DELETE",
     });
     router.push("/todo-api");
+    socketEmit('deleteTodo', id)
   };
 
   return (

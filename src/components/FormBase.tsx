@@ -2,7 +2,8 @@ import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { Todo } from "../types/type";
 import Layout from "../components/Layout";
-import styles from '../styles/Home.module.css'
+import { socketEmit } from '../utils/socket'
+
 type ChangeInputHandler = ChangeEvent<HTMLInputElement>;
 
 const inititalState = {
@@ -47,6 +48,7 @@ const Form = (): JSX.Element => {
     try {
       if (typeof router.query.id === "string") {
         await updateTask(router.query.id, task);
+        socketEmit('updateTodo', task)
       } else {
         await createTask(task);
       }

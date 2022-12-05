@@ -4,29 +4,41 @@ import List from "../../components/List";
 import { GetServerSideProps } from "next";
 import { useState, ChangeEvent, useEffect } from "react";
 import FormBase from "../../components/FormBase";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
+import {
+  socketConnection,
+  socketEmit,
+  socketOn,
+} from "../../utils/socket";
 
 type Props = {
   todos: Todo[];
 };
 
 const HomePage = ({ todos }: Props) => {
-  const router = useRouter()
-  const [filter, setFilter] = useState("");
+  useEffect(() => {
+    socketConnection();
+    socketOn("updated", (payload: any) => {
+      refreshPage();
+    });
+  });
+
+  const router = useRouter();
+  const [keyword, setKeyword] = useState("");
   const [search, setSearch] = useState(false);
 
   const handleSubmit = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setFilter(e.target.value);
+    setKeyword(e.target.value);
   };
 
-  const fillted = todos.filter((item) => {
-    return item.todo.toLowerCase().includes(filter);
+  const fillted = todos?.filter((item: Todo) => {
+    return item.todo.toLowerCase().includes(keyword);
   });
 
   const handleChangeSearch = () => {
     setSearch(!search);
-    setFilter("");
+    setKeyword("");
   };
 
   const updateTask = async (id: string, task: Todo) => {
@@ -43,7 +55,7 @@ const HomePage = ({ todos }: Props) => {
     const { checked } = e.target;
     try {
       let id = String(data.id);
-       await updateTask(id, {
+      await updateTask(id, {
         todo: data.todo,
         isCompleted: checked,
       });
@@ -51,8 +63,12 @@ const HomePage = ({ todos }: Props) => {
     } catch (error: any) {
       console.log(error);
     }
-  }
-  
+  };
+
+  const refreshPage = () => {
+    router.replace(router.asPath)
+  };
+
   return (
     <Layout title="Todo App">
       <h1>Todo App (API)</h1>
@@ -79,6 +95,13 @@ const HomePage = ({ todos }: Props) => {
     </Layout>
   );
 };
+
+// HomePage.getInitialProps = async () => {
+//   const res = await fetch("http://localhost:4001/api/todo");
+//   const todos = await res.json();
+
+//   return { todos: todos}
+// }
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const res = await fetch("http://localhost:4001/api/todo");
