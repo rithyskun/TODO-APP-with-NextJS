@@ -7,6 +7,8 @@ import { GetStaticProps, GetServerSideProps } from "next";
 import { sampleTodoData } from "../../utils/sample-data";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
+const ENDPOINT: string = process.env.NEXT_PUBLIC_ENDPOINT as string;
+
 type Props = {
   items: Todo[];
 };
@@ -24,7 +26,7 @@ const HomePage = ({ items }: Props): JSX.Element => {
     if (!task.todo) {
       return alert("The task require!");
     }
-    const response = await fetch("http://localhost:4001/api/todo", {
+    const response = await fetch(ENDPOINT, {
       method: "POST",
       body: JSON.stringify(task),
       headers: {
@@ -75,17 +77,9 @@ const HomePage = ({ items }: Props): JSX.Element => {
   );
 };
 
-// export const getStaticProps: GetStaticProps = async () => {
-//   const items: Todo[] = sampleTodoData;
-//   return { props: { items } };
-// };
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await fetch("http://localhost:4001/api/todo");
-  const items = await res.json();
-  return {
-    props: { items },
-  };
+export const getStaticProps: GetStaticProps = async () => {
+  const items: Todo[] = sampleTodoData;
+  return { props: { items } };
 };
 
 export default HomePage;
