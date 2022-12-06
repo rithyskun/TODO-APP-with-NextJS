@@ -2,8 +2,9 @@ import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { Todo } from "../types/type";
 import Layout from "../components/Layout";
-import { socketEmit } from '../utils/socket'
+import { socketEmit } from "../utils/socket";
 
+const ENDPOINT: string = (process.env.NEXT_PUBLIC_ENDPOINT) as string
 type ChangeInputHandler = ChangeEvent<HTMLInputElement>;
 
 const inititalState = {
@@ -13,6 +14,7 @@ const inititalState = {
 };
 
 const Form = (): JSX.Element => {
+
   const [task, setTask] = useState<Todo>(inititalState);
   const router = useRouter();
 
@@ -20,7 +22,7 @@ const Form = (): JSX.Element => {
     if (!task.todo) {
       return alert("The task require!");
     }
-    const response = await fetch("http://localhost:4001/api/todo", {
+    const response = await fetch(ENDPOINT, {
       method: "POST",
       body: JSON.stringify(task),
       headers: {
@@ -30,11 +32,11 @@ const Form = (): JSX.Element => {
     if (response.status === 409) {
       return alert("The task exist!");
     }
-    return response
+    return response;
   };
 
   const updateTask = async (id: string, task: Todo) => {
-    await fetch("http://localhost:4001/api/todo/" + id, {
+    await fetch(ENDPOINT + '/' + id, {
       method: "PUT",
       body: JSON.stringify(task),
       headers: {
@@ -48,7 +50,7 @@ const Form = (): JSX.Element => {
     try {
       if (typeof router.query.id === "string") {
         await updateTask(router.query.id, task);
-        socketEmit('updateTodo', task)
+        socketEmit("updateTodo", task);
       } else {
         await createTask(task);
       }
@@ -69,7 +71,7 @@ const Form = (): JSX.Element => {
   };
 
   const onLoad = async (id: string) => {
-    const resp = await fetch("http://localhost:4001/api/todo/" + id);
+    const resp = await fetch(ENDPOINT + '/' + id);
     const task = await resp.json();
 
     setTask({

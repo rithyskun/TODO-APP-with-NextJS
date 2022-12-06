@@ -2,7 +2,9 @@ import { Todo } from "../types/type";
 import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
 import { ChangeEvent } from "react";
-import { socketConnection, socketEmit, socketOn } from '../utils/socket'
+import { socketConnection, socketEmit, socketOn } from "../utils/socket";
+
+const ENDPOINT: string = process.env.NEXT_PUBLIC_ENDPOINT as string;
 
 type Props = {
   items: Todo[];
@@ -15,19 +17,19 @@ const List = ({ items, onChange }: Props) => {
     router.push(`/todo-api/edit/${id}`);
   };
   const handleDelete = async (id: string) => {
-    await fetch("http://localhost:4001/api/todo/" + id, {
+    await fetch(ENDPOINT + "/" + id, {
       method: "DELETE",
     });
     router.push("/todo-api");
-    socketEmit('deleteTodo', id)
+    socketEmit("deleteTodo", id);
   };
 
   return (
-    <>
+    <div>
       {items?.length ? (
-        <ul>
+        <div className={styles.list}>
           {items?.map((item) => (
-            <li key={item.id}>
+            <div key={item.id}>
               <input
                 id="isCompleted"
                 name="isCompleted"
@@ -42,22 +44,20 @@ const List = ({ items, onChange }: Props) => {
                 {item.isCompleted ? (
                   <span className={styles.checked}>{item.todo}</span>
                 ) : (
-                  <div>{item.todo}</div>
+                  <span>{item.todo}</span>
                 )}
-              </span>
-              <span>
                 <button onClick={() => handleEdit(String(item.id))}>
                   edit
                 </button>
                 <button onClick={() => handleDelete(String(item.id))}>x</button>
               </span>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
         <>no result. create new one instead!</>
       )}
-    </>
+    </div>
   );
 };
 

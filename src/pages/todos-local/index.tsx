@@ -51,7 +51,7 @@ const HomePage = ({ items }: Props): JSX.Element => {
     <Layout>
       <h1>Todo App with local</h1>
       <div>
-        <List title="Task List" handleRemoveCompleted={handlerRemoveCompleted}>
+        <List handleRemoveCompleted={handlerRemoveCompleted}>
           <form onSubmit={() => hanleSubmit}>
             <input
               type="text"

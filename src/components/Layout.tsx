@@ -9,7 +9,7 @@ type Props = {
 };
 
 const Layout = ({ children, title = "Todo App" }: Props) => (
-  <main>
+  <div>
     <Head>
       <title>{title}</title>
       <meta charSet="utf-8" />
@@ -22,8 +22,10 @@ const Layout = ({ children, title = "Todo App" }: Props) => (
         <Link href="/todos-local"> Todo with Local State</Link>
       </nav>
     </header>
-    {children}
-  </main>
+    <section>
+      {children}
+    </section>
+  </div>
 );
 
 export default Layout;

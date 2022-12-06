@@ -5,12 +5,9 @@ import { GetServerSideProps } from "next";
 import { useState, ChangeEvent, useEffect } from "react";
 import FormBase from "../../components/FormBase";
 import { useRouter } from "next/router";
-import {
-  socketConnection,
-  socketEmit,
-  socketOn,
-} from "../../utils/socket";
+import { socketConnection, socketEmit, socketOn } from "../../utils/socket";
 
+const ENDPOINT: string = process.env.NEXT_PUBLIC_ENDPOINT as string;
 type Props = {
   todos: Todo[];
 };
@@ -42,7 +39,7 @@ const HomePage = ({ todos }: Props) => {
   };
 
   const updateTask = async (id: string, task: Todo) => {
-    await fetch("http://localhost:4001/api/todo/" + id, {
+    await fetch(ENDPOINT + "/" + id, {
       method: "PUT",
       body: JSON.stringify(task),
       headers: {
@@ -66,8 +63,18 @@ const HomePage = ({ todos }: Props) => {
   };
 
   const refreshPage = () => {
-    router.replace(router.asPath)
+    router.replace(router.asPath);
   };
+
+  // const fetchData = async () => {
+  //   try {
+  //     const res = await fetch(ENDPOINT);
+  //     const todos = await res.json();
+  //     return {
+  //       props: { todos },
+  //     };
+  //   } catch (error: any) {}
+  // };
 
   return (
     <Layout title="Todo App">
@@ -96,15 +103,8 @@ const HomePage = ({ todos }: Props) => {
   );
 };
 
-// HomePage.getInitialProps = async () => {
-//   const res = await fetch("http://localhost:4001/api/todo");
-//   const todos = await res.json();
-
-//   return { todos: todos}
-// }
-
 export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await fetch("http://localhost:4001/api/todo");
+  const res = await fetch(ENDPOINT);
   const todos = await res.json();
   return {
     props: { todos },
